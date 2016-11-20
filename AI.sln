@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6BB4AEFD-0B88-41C1-A274-80E67801D762}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Frogs", "src\Frogs\Frogs.xproj", "{B587B3DD-6E47-4172-AB9F-4CCF54D1C799}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SlidingBlocks", "src\SlidingBlocks\SlidingBlocks.xproj", "{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queens", "src\Queens\Queens.xproj", "{1A82E18B-6049-4964-9C7A-5775452DFE68}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Knapsack", "src\Knapsack\Knapsack.xproj", "{EE50DCF0-F7C7-4FF7-9F72-D8982F014975}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TicTacToe", "src\TicTacToe\TicTacToe.xproj", "{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B587B3DD-6E47-4172-AB9F-4CCF54D1C799}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B587B3DD-6E47-4172-AB9F-4CCF54D1C799}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B587B3DD-6E47-4172-AB9F-4CCF54D1C799}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B587B3DD-6E47-4172-AB9F-4CCF54D1C799}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A82E18B-6049-4964-9C7A-5775452DFE68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A82E18B-6049-4964-9C7A-5775452DFE68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A82E18B-6049-4964-9C7A-5775452DFE68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A82E18B-6049-4964-9C7A-5775452DFE68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE50DCF0-F7C7-4FF7-9F72-D8982F014975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE50DCF0-F7C7-4FF7-9F72-D8982F014975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE50DCF0-F7C7-4FF7-9F72-D8982F014975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE50DCF0-F7C7-4FF7-9F72-D8982F014975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B587B3DD-6E47-4172-AB9F-4CCF54D1C799} = {2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}
+		{E5807C2E-18F2-4C0C-A87B-6AFC741DAD8E} = {2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}
+		{1A82E18B-6049-4964-9C7A-5775452DFE68} = {2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}
+		{EE50DCF0-F7C7-4FF7-9F72-D8982F014975} = {2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}
+		{1BF518E1-8E3A-49A7-9B8F-9E66B65233C3} = {2A3A790F-2B3E-4F53-A2A5-CAD14AB960E6}
+	EndGlobalSection
+EndGlobal
