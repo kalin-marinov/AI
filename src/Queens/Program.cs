@@ -47,6 +47,7 @@ namespace Queens
                     if (IsSolved())
                     {
                         Console.WriteLine(GetFieldString());
+                        Console.WriteLine($"Solution found on {i} iterations");
                         return;
                     }
                 }
@@ -93,15 +94,7 @@ namespace Queens
         }
 
         static bool IsSolved()
-        {
-            for (int col = 0; col < queensCount; col++)
-            {
-                if (GetConflicts(queenPositions[col], col) != 0)
-                    return false;
-            }
-
-            return true;
-        }
+          =>  Enumerable.Range(0, queensCount).All(col => GetConflicts(queenPositions[col], col) == 0);
 
 
         static int SearchDiagonal(int row, int col, bool increaseRows, bool increaseCols)

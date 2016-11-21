@@ -81,9 +81,13 @@ let rec PrintPath(field :GameField) =
   field.Print();
 
 
+open System;
+
 [<EntryPoint>]
 let main argv = 
-    let field = new GameField(3);
+    let size = Int32.Parse(Console.ReadLine());
+
+    let field = new GameField(size);
     let result = DfsSearch(field);
 
     PrintPath(result.Value);
