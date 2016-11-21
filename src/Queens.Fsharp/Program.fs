@@ -1,10 +1,11 @@
 ﻿open System;
 
+/// <summary> Represents a chess field with a single queen placed on each column </summary>
 type QueensGame(queensCount: int) =
    let queenPositions = Array.create queensCount 0;
    let rng = new Random();
    do
-       for col = 0 to queensCount-1 do         
+       for col = 0 to queensCount - 1 do         
            queenPositions.[col] <- rng.Next(0, queensCount);
 
    
@@ -15,28 +16,31 @@ type QueensGame(queensCount: int) =
    member this.IsQueen(row, col) = queenPositions.[col] = row;
 
 
-   /// <summary> Counts the amount of queens on the diagonal intercepting the given position (row, col) </summary>
+   /// <summary> Counts the amount of queens on one of the diagonals intercepting the given position (row, col) </summary>
    member this.SearchDiagonal(row, col, increaseRows, increaseCols) =
-        let size = queensCount;
-        
-        let diffRow = if increaseRows then size - row - 1 else row;
-        let diffCol = if increaseCols then size - col - 1 else col;
-        let min = Math.Min(diffRow, diffCol); 
+        let maxPosition = queensCount - 1;
 
-        let rows =  if increaseRows then seq {row .. row + min} else seq {row .. -1 .. row - min};
-        let cols =  if increaseCols then seq {col .. col + min} else seq {col .. -1 .. col - min};
+        let distanceToEdge(position, isIncreasing) =
+            match isIncreasing with
+            | true -> maxPosition - position 
+            | false -> position - 0;
 
-        let count = Seq.zip rows cols
-                            |> Seq.filter (fun (r, c) -> this.IsQueen(r, c) && not(r = row && c = col))
-                            |> Seq.length;
-        count;    
+        let range(start, count, isIncreasing) =
+            match isIncreasing with
+            | true -> seq {start .. start + count} 
+            | false -> seq {start .. -1 .. start - count}
+
+        let distance = Math.Min(distanceToEdge(row, increaseRows), distanceToEdge(col, increaseCols)); 
+
+        // Result:
+        Seq.zip (range(row, distance, increaseRows)) (range(col, distance, increaseCols))
+            |> Seq.filter (fun (r, c) -> this.IsQueen(r, c) && not(r = row && c = col))
+            |> Seq.length;  
             
-
 
     /// <summary> Get the number of queens conflicting the given position  </summary>
    member this.GetConflicts(row, col) =
-
-            // Amount of queens on the same row (different from the current one)
+            // Counts the queens on the same row (different from the current one)
             let queensOnTheRow = seq [0 .. queensCount-1] 
                                  |> Seq.filter (fun c -> c <> col && this.IsQueen(row, c))
                                  |> Seq.length;
@@ -49,7 +53,7 @@ type QueensGame(queensCount: int) =
             queensOnTheRow + queensOnTheDiagonal;
         
 
-   member this.IsSolved() = seq {0 .. queensCount-1} 
+   member this.IsSolved() = seq [0 .. queensCount-1]
                             |> Seq.forall (fun col -> this.GetConflicts(queenPositions.[col], col) = 0)
 
    member this.PrintBoard() =
@@ -70,17 +74,8 @@ let main argv =
 
     while (continueLoop) do
        for col = 0 to size-1 do
-            let mutable minConflicts = Int32.MaxValue;
-            let mutable minConflictRow = -1;
-
-            for row = 0 to size-1 do               
-                let conflicts = game.GetConflicts(row, col);
-                if (conflicts <= minConflicts) then                    
-                    minConflicts <- conflicts;
-                    minConflictRow <- row;                 
-                   
-            // Move the queen to the minConflictRow
-            game.SetQueen(minConflictRow, col)
+            let minRow = seq [0 .. size - 1] |> Seq.minBy (fun row -> game.GetConflicts(row, col))
+            game.SetQueen(minRow, col)
 
        if game.IsSolved() then              
            game.PrintBoard();
@@ -89,7 +84,7 @@ let main argv =
        i <- i + 1;
 
        if (i % 1000 = 0) then
-            game <- new QueensGame(size);
+            game <- new QueensGame(size); // Start over!
 
     printf "Solution found on %d iterations \r\n" i;
     0 // return an integer exit code
