@@ -67,7 +67,7 @@ namespace TicTacToe
         /// <summary> Alpha beta pruning algorithm where X is the AI (maximizing) and O is the player (minimizing) </summary>
         static int AlphaBeta(GameField node, int depth, int alpha, int beta, bool maximizingPlayer)
         {
-            if (depth == 0)
+            if (depth == 0 || node.GetScore() != 0)
             {
                return node.GetScore();
             }
