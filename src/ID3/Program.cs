@@ -7,25 +7,37 @@ namespace ID3
 {
     public static class Program
     {
-        /// <summary> Contains a collection of the valid values for each attribute </summary>
-        static Dictionary<int, string[]> AttributeValues;
+        const int PartitionCount = 10;
+
+        /// <summary> Contains an array with the valid values of each attribute </summary>
+        static Dictionary<int, string[]> PossibleAttributeValues;
 
         public static void Main()
         {
             var lines = File.ReadAllLines("breast-cancer.arff").Where(line => line.StartsWith("'"));
-            var data = lines.Select(line => new DataSample(line)).ToArray();
+            var data = lines.Select(line => new DataSample(line)).ToList();
 
             var allAttributes = Enumerable.Range(0, data.First().Attributes.Length); // assuming all samples have the same attributes, so the first one can be used as model
 
-            AttributeValues = allAttributes.ToDictionary(
+            PossibleAttributeValues = allAttributes.ToDictionary(
                 keySelector: attr => attr,
                 elementSelector: attr => data.Select(sample => sample.Attributes[attr]).Distinct().ToArray());
 
-            var tree = Id3(data, allAttributes);
+            var partitions = data.Partition(count: PartitionCount).ToList();
 
-            var guessedTypes = data.Select(sample => new { Sample = sample, Guess = DetermineType(sample.Attributes, tree) });
-            var successRate = (double)guessedTypes.Count(guess => guess.Sample.IsPositive == guess.Guess) / data.Length;
-            Console.WriteLine($"Success rate is: {successRate * 100}%");
+            for (int i = 0; i < PartitionCount; i++)
+            {
+                var testSets = partitions.Skip(i).Take(1);
+                var learningSet = partitions.Except(testSets).SelectMany();
+                var testSet = testSets.Single().ToArray();
+
+                var decisionTree = Id3(learningSet, allAttributes);
+
+                var matches = testSet.Select(item => new { Sample = item, Guess = DetermineType(item.Attributes, decisionTree) });
+                var accurateMatches = matches.Count(m => m.Sample.IsPositive == m.Guess);
+
+                Console.WriteLine($"{i+1}-th test Accuracy: {accurateMatches * 100 / testSet.Length} %");
+            }
         }
 
         static bool DetermineType(string[] attributeValues, TreeNode decisionTree)
@@ -50,7 +62,7 @@ namespace ID3
                 return new TreeNode { Result = false };
 
             var bestAttribute = attributes.OrderByDescending(attr => set.CalculateInformationGain(attr)).First();
-            var values = AttributeValues[bestAttribute];
+            var values = PossibleAttributeValues[bestAttribute];
 
             var result = new TreeNode { Attribute = bestAttribute, SubNodes = new Dictionary<string, TreeNode>() };
             foreach (var value in values)
@@ -88,7 +100,7 @@ namespace ID3
         static double CalculateInformationGain(this IEnumerable<DataSample> set, int attribute)
         {
             var total = set.Count();
-            var values = AttributeValues[attribute];
+            var values = PossibleAttributeValues[attribute];
 
             double sum = 0;
             foreach (var value in values)
