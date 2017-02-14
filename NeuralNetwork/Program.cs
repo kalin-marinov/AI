@@ -15,6 +15,8 @@ namespace NeuralNetwork
 
             net.SetInput(new[] { 3.0, 2.5, 8.1 });
             var result = net.GetOutputs();
+
+            CodingBackProp.BackPropProgram.Main2(null);
         }
 
     }
