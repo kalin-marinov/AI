@@ -14,10 +14,16 @@ namespace NeuralNetwork
             var weights = net.GetWeights(0);
 
             net.SetInput(new[] { 3.0, 2.5, 8.1 });
+            var expected = new[] { 0.25, 0.5, 0.7 };
             var result = net.GetOutputs();
 
-            CodingBackProp.BackPropProgram.Main2(null);
-        }
+            while (Math.Abs(result.CalculateError(expected).Sum()) > 0.00001)
+            {
+                Console.WriteLine($"Result: [{string.Join(",", result)}]");
+                TrainingHelper.BackPropagate(net, expected);
 
+                result = net.GetOutputs();
+            }
+        }
     }
 }

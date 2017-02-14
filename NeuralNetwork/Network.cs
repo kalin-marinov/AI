@@ -82,20 +82,22 @@ namespace NeuralNetwork
         /// <summary> Creates a layer of Neuron, that are connected to each item of the previous layer with random weights </summary>
         private static IList<Neuron> CreateLayer(int unitCount, ICollection<Neuron> previousLayer)
         {
-            var hiddenNodes = new Neuron[unitCount];
+            var layerNodes = new Neuron[unitCount];
 
             for (int i = 0; i < unitCount; i++)
             {
-                hiddenNodes[i] = new Neuron();
-                hiddenNodes[i].InputNodes = new List<Synapse>(previousLayer.Count);
+                layerNodes[i] = new Neuron();
+                layerNodes[i].InputNodes = new List<Synapse>(previousLayer.Count);
 
                 foreach (var item in previousLayer)
                 {
-                    hiddenNodes[i].InputNodes.Add(Synapse.Randomized(item));
+                    var synapse = Synapse.Randomized(item, layerNodes[i]);
+                    layerNodes[i].InputNodes.Add(synapse);
+                    item.OutputNodes.Add(synapse);
                 }
             }
 
-            return hiddenNodes;
+            return layerNodes;
         }
     }
 }
