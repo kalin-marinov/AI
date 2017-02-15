@@ -40,7 +40,7 @@ namespace NeuralNetwork
                     // Back propagate
                     var result = net.LayerValues.Last();
 
-                    while (result.CalculateError(expected) > 0.05)
+                    while (result.CalculateError(expected) > 0.1)
                     {
                         net.BackPropagate(expected);
                         net.Calculate(input);
@@ -75,7 +75,7 @@ namespace NeuralNetwork
             var expected = new[] { 0.01, 0.01, 0.7, 0.25, 0.01 };
             var result = net.LayerValues.Last();
 
-            while (result.CalculateError(expected) > 0.000001)
+            while (result.CalculateError(expected) > 0.00001)
             {
                 Console.WriteLine($"Result: [{string.Join(",", result)}]");
                 net.BackPropagate(expected);

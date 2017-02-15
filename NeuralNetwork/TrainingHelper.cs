@@ -29,7 +29,7 @@ namespace NeuralNetwork
             for (int i = 0; i < output.Count; i++)
             {
                 var neuron = output[i];
-                var errorDelta = OutputDelta(neuron.GetValue(), expectedResult[i]);
+                var errorDelta = OutputDelta(expectedResult[i], neuron.GetValue());
                 errors.Add(neuron, errorDelta);
 
                 foreach (var synapse in neuron.InputNodes)

@@ -23,7 +23,7 @@ namespace NeuralNetwork
 
             int epoch = 0;
 
-            while (epoch < 100)
+            while (epoch < 200)
             {
                 ++epoch;
                 // Train
@@ -38,7 +38,7 @@ namespace NeuralNetwork
                     // Back propagate
                     var result = net.GetOutputs();
 
-                    while (result.CalculateError(output) > 0.5)
+                    while (result.CalculateError(output) > 1)
                     {
                         TrainingHelper.BackPropagate(net, output);
                         result = net.GetOutputs();
