@@ -19,7 +19,7 @@ namespace NeuralNetwork
             var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(10).ToList();
             var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(10).ToList();
 
-            var net = new Network(784, 50, 10);
+            var net = new Network(784, 100, 10);
 
             int epoch = 0;
 
@@ -34,13 +34,18 @@ namespace NeuralNetwork
                     var output = DigitToArray(trainLabels[i]);
 
                     net.SetInput(input);
-                    net.Reset();
 
                     // Back propagate
-                    TrainingHelper.BackPropagate(net, output);
                     var result = net.GetOutputs();
 
-                    Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} Actual: {trainLabels[i]}");
+                    while (result.CalculateError(output) > 0.5)
+                    {
+                        TrainingHelper.BackPropagate(net, output);
+                        result = net.GetOutputs();
+                        net.Reset();
+                    }
+
+                    //Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} Actual: {trainLabels[i]}");
                 }
 
                 Console.WriteLine("Epoch: " + epoch);

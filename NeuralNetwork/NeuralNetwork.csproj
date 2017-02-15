@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="MathHelper.cs" />
     <Compile Include="Network.cs" />
-    <Compile Include="Network2.cs" />
     <Compile Include="Neuron.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

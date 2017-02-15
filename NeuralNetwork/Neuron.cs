@@ -6,7 +6,7 @@ namespace NeuralNetwork
 {
     public class Neuron
     {
-        public double Bias { get; set; } = 1;
+        public double Bias { get; set; } = 0;
 
         private double? netValue;
         private double? actualValue;
