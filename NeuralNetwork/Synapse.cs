@@ -4,16 +4,30 @@ namespace NeuralNetwork
 {
     public class Synapse
     {
-        public double Weight { get; set; }
+        private double weight;
+        private double? cachedValue;
+
 
         public Neuron SourceNeuron { get; set; }
         
         public Neuron TargetNeuron { get; set; }
 
         public double Value
-             => SourceNeuron.GetValue() * Weight;
+        {
+            get
+            {
+                if (!cachedValue.HasValue)
+                    cachedValue = SourceNeuron.GetValue() * Weight;
 
+                return cachedValue.Value;
+            }
+        }
 
+        public double Weight
+        {
+            get { return weight; }
+            set { weight = value; cachedValue = null; }
+        }
 
         static Random rng = new Random();
 

@@ -6,10 +6,10 @@ namespace NeuralNetwork
 {
     public class Neuron
     {
-        public double Bias { get; set; } = 0;
+        public double Bias { get; set; } = 1;
 
         private double? netValue;
-        private double? activatedValue;
+        private double? actualValue;
 
         public IList<Synapse> InputNodes { get; set; } = new List<Synapse>();
 
@@ -22,7 +22,7 @@ namespace NeuralNetwork
 
         /// <summary> The neuron value - equals to the activation function applied to the sum of all synapse values and the bias </summary>
         public double GetValue()
-           => Activate(GetValueWithoutActivation());
+           =>  Activate(GetValueWithoutActivation());
         
 
         /// <summary> Returns the net value (without applying activation function - (b1 + w1*v1 + w2*v2 ...))
@@ -34,7 +34,7 @@ namespace NeuralNetwork
             {
                 var synapseValues = InputNodes.Select(s => s.Value);
                 var sum = Bias + synapseValues.Sum();
-                return sum;
+                netValue = sum;
             }
 
             return netValue.Value;
@@ -43,6 +43,18 @@ namespace NeuralNetwork
 
         /// <summary> Hyperbolical tangent - a sigmoid function </summary>
         private double Activate(double value)
-            => Math.Tanh(value);
+        {
+            if (!actualValue.HasValue)
+                actualValue = MathHelper.Sigmoid(value);
+
+            return actualValue.Value;
+        }
+
+
+        public void Reset()
+        {
+            actualValue = null;
+            netValue = null;
+        }
     }
 }

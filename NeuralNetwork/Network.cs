@@ -68,7 +68,7 @@ namespace NeuralNetwork
                 for (int j = 0; j < item.InputNodes.Count; j++)
                 {
                     var node = item.InputNodes[j];
-                    result[i,j] = node.Weight;
+                    result[i, j] = node.Weight;
                 }
             }
 
@@ -99,5 +99,13 @@ namespace NeuralNetwork
 
             return layerNodes;
         }
+
+        public void Reset()
+        {
+            foreach (var layer in Layers.Skip(1))
+                foreach (var neuron in layer)
+                    neuron.Reset();
+        }
+
     }
 }

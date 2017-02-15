@@ -5,15 +5,16 @@ namespace NeuralNetwork
 {
     public static class TrainingHelper
     {
-        public static double[] CalculateError(this IList<double> actual, IList<double> expected)
+        public static double[] CalculateDifference(this IList<double> actual, IList<double> expected)
            => Enumerable.Range(0, expected.Count).Select(i => expected[i] - actual[i]).ToArray();
 
-        public static double[] Multiply(IList<double> first, IList<double> second)
-           => Enumerable.Range(0, first.Count).Select(i => first[i] * second[i]).ToArray();
+
+        /// <summary> 1/2 * SUM [(targetN - outputN) ^ 2]    -- for each N in the values arrays </summary>
+        public static double CalculateError(this IList<double> actual, IList<double> expected)
+           =>  0.5 * actual.CalculateDifference(expected).Select(diff => diff * diff).Sum();
 
 
-
-        /// <summary> dErr/dOut * dOut/dNet - production of the drivatives </summary>
+        /// <summary> dErr/dOut * dOut/dNet - production of the drivatives, a.k.a error signal denoted as delta </summary>
         public static double OutputDelta(double expected, double actual)
             => -(expected - actual) *  (actual * (1 - actual));
         
@@ -47,7 +48,7 @@ namespace NeuralNetwork
                 var value = neuron.GetValue();
                 var derivative = value * (1 - value);
 
-                // calculate sum of errorDelta of each connected output node
+                // calculate sum of errorDelta (error signal) of each connected (affected) output node
                 var sum = 0.0;
                 foreach (var synapse in neuron.OutputNodes)
                 {
