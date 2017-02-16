@@ -15,6 +15,7 @@ namespace NeuralNetwork
         /// <summary> The weights for synapses between layers. Ex. weights[0] are the weights between layers 0 and 1 </summary>
         public List<Double[,]> Weights { get; private set; }
 
+        public List<Double[]> Biases  { get; private set; }
 
         /// <summary> Creates a Neural network with multiple hidden layers </summary>
         public Network(int inputCount, int[] hiddenLayersUnits, int outputCount)
@@ -22,6 +23,7 @@ namespace NeuralNetwork
             LayerValues = new List<double[]>(2 + hiddenLayersUnits.Length);
             LayerNetValues = new List<double[]>(2 + hiddenLayersUnits.Length);
             Weights = new List<double[,]>(1 + hiddenLayersUnits.Length);
+            Biases = new List<double[]>(1 + hiddenLayersUnits.Length);
 
             // Prepare arrays for input:
             LayerValues.Add(new double[inputCount]);
@@ -34,6 +36,7 @@ namespace NeuralNetwork
                 var prevLayerCount = LayerNetValues[i].Length;
 
                 Weights.Add(new double[prevLayerCount, hiddenCount]);
+                Biases.Add(new double[hiddenCount]);
                 LayerValues.Add(new double[hiddenCount]);
                 LayerNetValues.Add(new double[hiddenCount]);
             }
@@ -43,6 +46,7 @@ namespace NeuralNetwork
             Weights.Add(new double[lastLayerCount, outputCount]);
             LayerValues.Add(new double[outputCount]);
             LayerNetValues.Add(new double[outputCount]);
+            Biases.Add(new double[outputCount]);
 
             SetRandomWeights();
         }
@@ -55,7 +59,7 @@ namespace NeuralNetwork
         public void Calculate(double[] input)
         {
             LayerNetValues[0] = input;
-            LayerValues[0] = LayerNetValues[0].Select(MathHelper.Sigmoid).ToArray();
+            LayerValues[0] = input;
 
             for (int i = 0; i < Weights.Count; i++)
                 CalculateLayerValues(i + 1);
@@ -69,7 +73,7 @@ namespace NeuralNetwork
             {
                 for (int row = 0; row < weightMatrix.GetLength(0); row++)
                     for (int col = 0; col < weightMatrix.GetLength(1); col++)
-                        weightMatrix[row, col] =  rng.NextDouble();
+                        weightMatrix[row, col] =  rng.NextDouble() * 0.001;
 
             }
         }
@@ -83,7 +87,7 @@ namespace NeuralNetwork
 
             for (int curr = 0; curr < layer.Length; ++curr)
             {
-                layer[curr] = 0; // reset value
+                layer[curr] = Biases[index-1][curr]; // reset value
 
                 for (int prev = 0; prev < inputs.Length; ++prev)
                     layer[curr] += inputs[prev] * inputWeights[prev, curr]; // weight * input
@@ -103,18 +107,18 @@ namespace NeuralNetwork
             var outputSignals = new double[output.Length];
             for (int i = 0; i < output.Length; i++)
             {
-                var error = expectedValues[i] - output[i];         // Derivative - dErr / dOut 
-                var derivative = (1 - output[i]) * output[i];      // Derivative - dOut / dNet   (derivative of sigmoid)
-                outputSignals[i] = error * derivative;             // Product: dErr / dOut *  dOut / dNet -  a.k.a delta
+                var error = expectedValues[i] - output[i];                      // Derivative - dErr / dOut 
+                var derivative = output[i] * (1 - output[i]);      // Derivative - dOut / dNet   (derivative of sigmoid)
+                outputSignals[i] = error * derivative;                          // Product: dErr / dOut *  dOut / dNet -  a.k.a delta
             }
 
-            var hiddenNetValues = LayerNetValues[1];
+            var hiddenValues = LayerValues[1];
             var hiddenOutputWeights = Weights[1]; // weights between hidden and output layer
-            var hiddenNeuronSignals = new double[hiddenNetValues.Length];
+            var hiddenNeuronSignals = new double[hiddenValues.Length];
 
-            for (int h = 0; h < hiddenNetValues.Length; h++)
+            for (int h = 0; h < hiddenValues.Length; h++)
             {
-                var derivative = hiddenNetValues[h] * (1 - hiddenNetValues[h]);
+                var derivative = hiddenValues[h] * (1 - hiddenValues[h]);
 
                 var sum = 0.0; // need sums of output signals errors multiplied by the weight of each synapse
                 for (int o = 0; o < output.Length; o++)
@@ -127,7 +131,7 @@ namespace NeuralNetwork
             var input = LayerValues[0];
             var inputHiddenWeights = Weights[0]; // weights between input and hidden layer
 
-            for (int h = 0; h < hiddenNetValues.Length; ++h)
+            for (int h = 0; h < hiddenValues.Length; ++h)
             {
                 for (int i = 0; i < input.Length; ++i)
                 {
@@ -139,12 +143,12 @@ namespace NeuralNetwork
             }
 
             // Update hidden - output weights
-            for (int j = 0; j < hiddenNetValues.Length; ++j)
+            for (int j = 0; j < hiddenValues.Length; ++j)
             {
                 for (int k = 0; k < output.Length; ++k)
                 {
-                    var gradient = outputSignals[k] * hiddenNetValues[j];
-                    var delta = gradient;
+                    var gradient = outputSignals[k] * hiddenValues[j];
+                    var delta = gradient; 
                     hiddenOutputWeights[j, k] += delta;
                 }
             }

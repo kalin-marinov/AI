@@ -33,7 +33,7 @@ namespace NeuralNetwork
 
         /// <summary> Creates a synapse connecting the source and destination, with a random weight between 0 and 1</summary>
         public static Synapse Randomized(Neuron source, Neuron destination)
-            => new Synapse { SourceNeuron = source,  TargetNeuron = destination, Weight = rng.NextDouble() };
+            => new Synapse { SourceNeuron = source,  TargetNeuron = destination, Weight = rng.NextDouble() * 0.001 };
 
     }
 }

@@ -9,6 +9,6 @@ namespace NeuralNetwork
     public static class MathHelper
     {
         public static double Sigmoid(double value)
-            => 1.0d / (1.0d + Math.Exp(-value));
+            =>  1.0d / (1.0d + Math.Exp(-value));
     }
 }

@@ -8,8 +8,11 @@ namespace NeuralNetwork
     {
         public double Bias { get; set; } = 0;
 
+        public bool IsInput { get; set; } = false;
+
         private double? netValue;
         private double? actualValue;
+
 
         public IList<Synapse> InputNodes { get; set; } = new List<Synapse>();
 
@@ -22,7 +25,7 @@ namespace NeuralNetwork
 
         /// <summary> The neuron value - equals to the activation function applied to the sum of all synapse values and the bias </summary>
         public double GetValue()
-           =>  Activate(GetValueWithoutActivation());
+           =>  IsInput ? netValue.Value : Activate(GetValueWithoutActivation());
         
 
         /// <summary> Returns the net value (without applying activation function - (b1 + w1*v1 + w2*v2 ...))

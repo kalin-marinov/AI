@@ -28,7 +28,10 @@ namespace NeuralNetwork
         public void SetInput(IList<double> inputVaues)
         {
             for (int i = 0; i < InputLayer.Count; i++)
+            {
                 InputLayer[i].SetValue(inputVaues[i]);
+                InputLayer[i].IsInput = true;
+            }
         }
 
         public void SetWeights(int index, double[,] weights)

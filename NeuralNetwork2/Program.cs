@@ -11,13 +11,13 @@ namespace NeuralNetwork
     {
         public static void Main()
         {
-            SimpleTest();
+            //SimpleTest();
 
-            var trainImages = ImageDataReader.ReadImageFile(@"Data\train-images.idx3-ubyte").Take(200).ToList();
-            var trainLabels = ImageDataReader.ReadLabels(@"Data\train-labels.idx1-ubyte").Take(200).ToList();
+            var trainImages = ImageDataReader.ReadImageFile(@"Data\train-images.idx3-ubyte").Take(1000).ToList();
+            var trainLabels = ImageDataReader.ReadLabels(@"Data\train-labels.idx1-ubyte").Take(1000).ToList();
 
-            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(10).ToList();
-            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(10).ToList();
+            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").ToList();
+            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").ToList();
 
             TestNet2(trainImages, trainLabels, testImages, testLabels);
         }
@@ -40,16 +40,15 @@ namespace NeuralNetwork
                     // Back propagate
                     var result = net.LayerValues.Last();
 
-                    while (result.CalculateError(expected) > 0.1)
-                    {
-                        net.BackPropagate(expected);
-                        net.Calculate(input);
-                        result = net.LayerValues.Last();
-                    }
+                    net.BackPropagate(expected);
+                    net.Calculate(input);
+                    var result2 = net.LayerValues.Last();
 
-                    Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} Actual: {trainLabels[i]}");
+
+                    Console.WriteLine($"Trained for image {i} Initial:{ArrayToDigit(result)} After backprop: {ArrayToDigit(result)} Actual: {trainLabels[i]}");
                 }
                 Console.WriteLine("Epoch: " + epoch);
+                trainImages = trainImages.Shuffle();   // This network cannot learn on shuffled input yet
                 epoch++;
             }
 
@@ -109,7 +108,7 @@ namespace NeuralNetwork
 
         /// <summary> Maps a number from 0 to 255 to a decimal between 0 and 1 </summary>
         static double MapInput(byte b)
-            => (double)b / 255;
+            => (double)b / 2550;
 
     }
 }

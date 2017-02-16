@@ -38,16 +38,15 @@ namespace NeuralNetwork
                     // Back propagate
                     var result = net.GetOutputs();
 
-                    while (result.CalculateError(output) > 1)
-                    {
-                        TrainingHelper.BackPropagate(net, output);
-                        result = net.GetOutputs();
-                        net.Reset();
-                    }
+                    TrainingHelper.BackPropagate(net, output);
+                    var result2 = net.GetOutputs();
+                    net.Reset();
 
-                    //Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} Actual: {trainLabels[i]}");
+
+                    Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} After backrpop: {ArrayToDigit(result2)}  Actual: {trainLabels[i]}");
                 }
 
+                //trainImages = trainImages.Shuffle();
                 Console.WriteLine("Epoch: " + epoch);
             }
 
