@@ -62,8 +62,11 @@ namespace DigitRecognition.UI
             {
                 var line = new Line()
                 {
-                    StrokeThickness = 8,
+                    StrokeThickness = 10,
                     Stroke = brush,
+                    StrokeDashCap = PenLineCap.Round,
+                    StrokeStartLineCap = PenLineCap.Round,
+                    StrokeEndLineCap = PenLineCap.Round,
                     X1 = currentPoint.X - CanvasBorder.Margin.Left,
                     Y1 = currentPoint.Y - CanvasBorder.Margin.Top,
                     X2 = e.GetPosition(this).X - CanvasBorder.Margin.Left,
@@ -148,6 +151,16 @@ namespace DigitRecognition.UI
             network = await task;
 
             ProgressText = "Training finished";
+            btn1.IsEnabled = true;
+        }
+
+        private void btnUseSaved_Click(object sender, RoutedEventArgs e)
+        {
+            network = new Network(784, 50, 10);
+            network.LoadWeightsFromFile(0, "Data/weights0.txt");
+            network.LoadWeightsFromFile(1, "Data/weights1.txt");
+
+            ProgressText = "Weights loaded";
             btn1.IsEnabled = true;
         }
     }

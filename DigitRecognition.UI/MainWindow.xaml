@@ -7,23 +7,25 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="431.333" Width="577.666" ResizeMode="NoResize">
     <Grid>
+        <Button x:Name="btnTrain" Content="Train Network" HorizontalAlignment="Left" Margin="28,10,0,0" VerticalAlignment="Top" Width="103" Click="btnTrain_Click" Height="25" />
+        <Button x:Name="btnUseSaved" Content="Use Saved weights" HorizontalAlignment="Left" Margin="153,10,0,0" VerticalAlignment="Top" Width="112" Click="btnUseSaved_Click" Height="25" />
+        <Label  Content="{Binding Path=ProgressText, Mode=TwoWay}" HorizontalAlignment="Left" Margin="303,10,0,0" VerticalAlignment="Top" Height="29" Width="226"/>
 
         <Label x:Name="label" Content="Draw Digit here:" HorizontalAlignment="Left" Margin="28,51,0,0" VerticalAlignment="Top" Height="29" Width="116"/>
+        <Label Content="Rasterized 28 x 28 image" HorizontalAlignment="Left" Margin="223,51,0,0" VerticalAlignment="Top" Height="29" Width="150"/>
         <Border x:Name="CanvasBorder" BorderBrush="Black" Margin="28,91,0,0" BorderThickness="1"  Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Canvas Name="paintSurface" MouseDown="Canvas_MouseDown_1"  MouseMove="Canvas_MouseMove_1">
                 <Canvas.Background>
-                    <SolidColorBrush Color="LightGray" Opacity="0"/>
+                    <SolidColorBrush Color="White" Opacity="0"/>
                 </Canvas.Background>
             </Canvas>
         </Border>
         <Border x:Name="ImageBorder" BorderBrush="Black" Margin="223,91,0,0" BorderThickness="1"  Width="150" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Image x:Name="bitmapImage" />
         </Border>
+        
         <Button x:Name="btn1" Content="Rasterize" HorizontalAlignment="Left" Margin="28,266,0,0" VerticalAlignment="Top" Width="150"  Click="btn1_Click" Height="25" IsEnabled="False" />
-        <Label Content="Rasterized 28 x 28 image" HorizontalAlignment="Left" Margin="223,51,0,0" VerticalAlignment="Top" Height="29" Width="150"/>
         <Button x:Name="guessBtn" Content="Guess" HorizontalAlignment="Left" Margin="223,266,0,0" VerticalAlignment="Top" Width="150" Click="guessBtn_Click" Height="25" IsEnabled="False" />
         <TextBlock x:Name="resultBlock" HorizontalAlignment="Left" Margin="28,310,0,0" TextWrapping="Wrap" Text="{Binding Path=ResultText, Mode=TwoWay}" VerticalAlignment="Top" Height="62" Width="345"/>
-        <Button x:Name="btnTrain" Content="Train Network" HorizontalAlignment="Left" Margin="28,23,0,0" VerticalAlignment="Top" Width="150" Click="btnTrain_Click" Height="25" />
-        <Label  Content="{Binding Path=ProgressText, Mode=TwoWay}" HorizontalAlignment="Left" Margin="204,22,0,0" VerticalAlignment="Top" Height="29" Width="226"/>
     </Grid>
 </Window>

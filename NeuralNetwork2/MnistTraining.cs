@@ -50,11 +50,11 @@ namespace NeuralNetwork
             return net;
         }
 
-        public void TestNetwork(Network net)
+        public void TestNetwork(Network net, int exampleCount = 10000)
         {
             // Test:
-            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(50).ToList();
-            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(50).ToList();
+            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(exampleCount).ToList();
+            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(exampleCount).ToList();
 
             int succeed = 0;
             for (int i = 0; i < testImages.Count; i++)
