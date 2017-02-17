@@ -1,6 +1,7 @@
 ﻿using NeuralNetwork;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,17 +17,37 @@ namespace DigitRecognition.UI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = this;
         }
 
         Point currentPoint = new Point();
 
         private byte[] pixels;
         private Network network;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+
+
+        private string progressText;
+        private string resultText;
+
+        public string ProgressText {
+            get { return progressText; }
+            set { progressText = value;PropertyChanged(this, new PropertyChangedEventArgs(nameof(ProgressText))); }
+        }
+
+        public string ResultText
+        {
+            get { return resultText; }
+            set { resultText = value; PropertyChanged(this, new PropertyChangedEventArgs(nameof(ResultText))); }
+        }
+
 
         private void Canvas_MouseDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -65,14 +86,13 @@ namespace DigitRecognition.UI
 
         public void RasterizeToBitmap(UIElement element)
         {
-            const double Scale = 0.2;
+            const double SCALE = 0.2;
 
-            var target = new RenderTargetBitmap(
-                (int)element.RenderSize.Width, (int)element.RenderSize.Height,
+            var target = new RenderTargetBitmap((int)element.RenderSize.Width, (int)element.RenderSize.Height,
                 160, 160, PixelFormats.Pbgra32);
 
             target.Render(element);
-            var scaled = Resize(target, Scale);
+            var scaled = target.Resize(SCALE);
 
             var encoder = new PngBitmapEncoder();
             var outputFrame = BitmapFrame.Create(scaled);
@@ -86,71 +106,46 @@ namespace DigitRecognition.UI
                 var bmp = new Bitmap(ms);
 
                 // 10 pixels padding
-                var startX = (int)((CanvasBorder.Margin.Left + 10) * Scale);
-                var startY = (int)((CanvasBorder.Margin.Top + 10) * Scale);
+                var startX = (int)((CanvasBorder.Margin.Left + 10) * SCALE);
+                var startY = (int)((CanvasBorder.Margin.Top + 10) * SCALE);
 
-                var width = (int)((CanvasBorder.ActualWidth - 10) * Scale);
-                var height = (int)((CanvasBorder.ActualHeight - 10) * Scale);
+                var width = (int)((CanvasBorder.ActualWidth - 10) * SCALE);
+                var height = (int)((CanvasBorder.ActualHeight - 10) * SCALE);
 
                 var rect = new System.Drawing.Rectangle(startX, startY, width, height);
 
-                var test2 = CropImage(bmp, rect);
+                var finalImage = bmp.CropImage(rect);
                 var imgName = Guid.NewGuid().ToString() + ".png";
 
-                pixels = GetPixels(test2).ToArray();
-                test2.Save(imgName);
+                pixels = finalImage.GetPixels().ToArray();
+                finalImage.Save(imgName);
 
                 bitmapImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), imgName)));
 
                 bmp.Dispose();
-                test2.Dispose();
+                finalImage.Dispose();
             }
-        }
-
-        private IEnumerable<byte> GetPixels(Bitmap test2)
-        {
-            for (int i = 0; i < test2.Width; i++)
-            {
-                for (int j = 0; j < test2.Height; j++)
-                {
-                    var color = test2.GetPixel(i, j);
-                    if (color.R!= color.G && color.G != color.B)
-                        throw new ArgumentException("Pixels are not in the 256 shades of gray");
-
-                    yield return (byte)(255 - color.R);
-                }
-            }
-        }
-
-        public static Bitmap CropImage(Bitmap b, System.Drawing.Rectangle r)
-        {
-            Bitmap nb = new Bitmap(r.Width, r.Height);
-            var g = System.Drawing.Graphics.FromImage(nb);
-            g.DrawImage(b, -r.X, -r.Y);
-            return nb;
-        }
-
-        BitmapSource Resize(BitmapSource img, double scale)
-        {
-            var s = new ScaleTransform(scale, scale);
-            var res = new TransformedBitmap(img, s);
-            return res;
         }
 
         private void guessBtn_Click(object sender, RoutedEventArgs e)
         {
-            var input = pixels.Select(b => (double)b).ToArray();
+            var input = pixels.Select(MNistTraining.MapInput).ToArray();
             var result = network.Calculate(input);
 
-            resultBlock.Text = "The number is " + Program.ArrayToDigit(result);
-                
+            ResultText = "The number is " + result.ToDigit();
         }
 
         private async void btnTrain_Click(object sender, RoutedEventArgs e)
         {
-            var task = Task.Run(() => Program.TrainNetwork());
+            ProgressText = "Begin training";
+
+            var train = new MNistTraining();
+            train.Changed += (_, args) => ProgressText = $"Training | Epoch: {args.Epoch} / {args.MaxEpoch}";
+
+            var task = Task.Run(() => train.TrainNetwork());
             network = await task;
 
+            ProgressText = "Training finished";
             btn1.IsEnabled = true;
         }
     }

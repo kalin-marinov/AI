@@ -22,7 +22,8 @@
         <Button x:Name="btn1" Content="Rasterize" HorizontalAlignment="Left" Margin="28,270,0,0" VerticalAlignment="Top" Width="150"  Click="btn1_Click" Height="25" IsEnabled="False" />
         <Label Content="Rasterized 28 x 28 image" HorizontalAlignment="Left" Margin="223,79,0,0" VerticalAlignment="Top" Height="29" Width="150"/>
         <Button x:Name="guessBtn" Content="Guess" HorizontalAlignment="Left" Margin="223,271,0,0" VerticalAlignment="Top" Width="150" Click="guessBtn_Click" Height="25" IsEnabled="False" />
-        <TextBlock x:Name="resultBlock" HorizontalAlignment="Left" Margin="28,300,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Height="62" Width="345"/>
+        <TextBlock x:Name="resultBlock" HorizontalAlignment="Left" Margin="28,300,0,0" TextWrapping="Wrap" Text="{Binding Path=ResultText, Mode=TwoWay}" VerticalAlignment="Top" Height="62" Width="345"/>
         <Button x:Name="btnTrain" Content="Train Network" HorizontalAlignment="Left" Margin="28,23,0,0" VerticalAlignment="Top" Width="150" Click="btnTrain_Click" Height="25" />
+        <Label  Content="{Binding Path=ProgressText, Mode=TwoWay}" HorizontalAlignment="Left" Margin="204,22,0,0" VerticalAlignment="Top" Height="29" Width="226"/>
     </Grid>
 </Window>

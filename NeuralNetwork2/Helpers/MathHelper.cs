@@ -8,6 +8,7 @@ namespace NeuralNetwork
             =>  1.0d / (1.0d + Math.Exp(-value));
 
 
+        /// <summary> Could replace the sigmoid at the output value, so that the outputs sum to 1 </summary>
         public static double[] Softmax(double[] netValues)
         {
             double sum = 0.0;

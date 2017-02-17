@@ -43,13 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MathHelper.cs" />
+    <Compile Include="Events\EpochChangeEventArgs.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
+    <Compile Include="MnistTraining.cs" />
     <Compile Include="Network.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Readers\BigEndianReader.cs" />
     <Compile Include="Readers\ImageDataReader.cs" />
-    <Compile Include="TrainingHelperExtensions.cs" />
+    <Compile Include="Helpers\TrainingHelperExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

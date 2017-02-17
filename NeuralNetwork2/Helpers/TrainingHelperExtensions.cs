@@ -37,10 +37,33 @@ namespace NeuralNetwork
             return sb.ToString();
         }
 
+        public static byte ToDigit(this IList<double> data)
+            => (byte)data.IndexOf(data.Max());
+
+
+        public static double[] ToProbabilityArray(this byte label)
+        {
+            switch (label)
+            {
+                case 0: return new[] { 1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 1: return new[] { 0.0d, 1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 2: return new[] { 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 3: return new[] { 0.0d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 4: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 5: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.0d, 0.0d };
+                case 6: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d, 0.0d };
+                case 7: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d, 0.0d, 0.0d };
+                case 8: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d, 0.0d };
+                case 9: return new[] { 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 0.0d, 1.0d };
+                default:
+                    throw new ArgumentException("invalid label " + label);
+            }
+        }
+
+
 
         const double LearnRate = 1;
         const double Momentum = 0.1;
-
 
         /// <summary> Back propagation for 3 layer network</summary>
         public static void BackPropagate(this Network net, double[] expectedValues)

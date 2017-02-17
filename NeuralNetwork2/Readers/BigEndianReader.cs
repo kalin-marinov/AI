@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace NeuralNetwork.Readers
 {
@@ -10,7 +11,8 @@ namespace NeuralNetwork.Readers
         private byte[] a64 = new byte[8];
 
         public BigEndianReader(System.IO.Stream stream) : base(stream)
-        { }
+        {
+        }
 
         public override int ReadInt32()
         {
@@ -31,13 +33,5 @@ namespace NeuralNetwork.Readers
             Array.Reverse(a64);
             return BitConverter.ToInt64(a64, 0);
         }
-
-        public override UInt32 ReadUInt32()
-        {
-            a32 = base.ReadBytes(4);
-            Array.Reverse(a32);
-            return BitConverter.ToUInt32(a32, 0);
-        }
-
     }
 }
