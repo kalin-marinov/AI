@@ -29,6 +29,9 @@ namespace NeuralNetwork
             set { weight = value; cachedValue = null; }
         }
 
+        public double PreviousWeightGradient { get; set; } = 0;
+
+
         static Random rng = new Random();
 
         /// <summary> Creates a synapse connecting the source and destination, with a random weight between 0 and 1</summary>

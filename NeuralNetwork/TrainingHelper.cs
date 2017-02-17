@@ -6,6 +6,7 @@ namespace NeuralNetwork
 {
     public static class TrainingHelper
     {
+
         public static double[] CalculateDifference(this IList<double> actual, IList<double> expected)
            => Enumerable.Range(0, expected.Count).Select(i => expected[i] - actual[i]).ToArray();
 
@@ -17,7 +18,7 @@ namespace NeuralNetwork
 
         /// <summary> dErr/dOut * dOut/dNet - production of the drivatives, a.k.a error signal denoted as delta </summary>
         public static double OutputDelta(double expected, double actual)
-            => -(expected - actual) *  (actual * (1 - actual));
+            => (expected - actual) *  (actual * (1 - actual));
 
         public static List<T> Shuffle<T>(this IList<T> array)
         {
@@ -58,8 +59,9 @@ namespace NeuralNetwork
                 // Proceed to modifying the weights of the input nodes
                 foreach (var synapse in neuron.InputNodes)
                 {
-                    var gradient = synapse.SourceNeuron.GetValueWithoutActivation() * sum * derivative;
-                    synapse.Weight -= gradient;
+                    var gradient = synapse.SourceNeuron.GetValue() * sum * derivative * 0.5;
+                    synapse.Weight += gradient + synapse.PreviousWeightGradient * 0.1;
+                    synapse.PreviousWeightGradient = gradient;
                 }
             }
 
@@ -70,8 +72,9 @@ namespace NeuralNetwork
                 foreach (var synapse in neuron.InputNodes)
                 {
                     // dErr/dWeight = dErr/dOut * dOut/dNet * dNet/dWeight
-                    var gradient = errorDelta * synapse.SourceNeuron.GetValue();
-                    synapse.Weight -= gradient;
+                    var gradient = errorDelta * synapse.SourceNeuron.GetValue() * 0.5;
+                    synapse.Weight += gradient + synapse.PreviousWeightGradient * 0.1;
+                    synapse.PreviousWeightGradient = gradient;
                 }
             }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace NeuralNetwork
 {
@@ -18,6 +19,22 @@ namespace NeuralNetwork
         {
             var rng = new Random();
             return array.OrderBy(x => rng.Next()).ToList();
+        }
+
+        public static string GetMatrixString(this double[,] matrix)
+        {
+            var sb = new StringBuilder();
+
+            for (int row = 0; row < matrix.GetLength(0); row++)
+            {
+                for (int col = 0; col < matrix.GetLength(1); col++)
+                {
+                    sb.Append(matrix[row,col] + ",");
+                }
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
         }
 
     }
