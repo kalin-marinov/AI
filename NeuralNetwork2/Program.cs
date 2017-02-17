@@ -38,8 +38,8 @@ namespace NeuralNetwork
                 var input = image.Select(b => (double)b).ToArray();
                 var output = testLabels[i];
 
-                net.Calculate(input);
-                var result = net.LayerValues.Last();
+               
+                var result = net.Calculate(input);
                 Console.WriteLine($"Processing image {i} Guess: {ArrayToDigit(result)} Actual: {output}");
 
                 if (ArrayToDigit(result) == output)

@@ -49,7 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Readers\BigEndianReader.cs" />
     <Compile Include="Readers\ImageDataReader.cs" />
-    <Compile Include="TrainingHelper.cs" />
+    <Compile Include="TrainingHelperExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
