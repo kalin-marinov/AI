@@ -19,27 +19,26 @@ namespace DigitRecognition.UI
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private Point currentPoint = new Point();
+        private byte[] pixels;
+        private Network network;
+        private string progressText;
+        private string resultText;
+
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
+            //ImageHelpers.ExportMNistImages();
         }
 
-        Point currentPoint = new Point();
 
-        private byte[] pixels;
-        private Network network;
         public event PropertyChangedEventHandler PropertyChanged;
 
-
-
-
-        private string progressText;
-        private string resultText;
-
-        public string ProgressText {
+        public string ProgressText
+        {
             get { return progressText; }
-            set { progressText = value;PropertyChanged(this, new PropertyChangedEventArgs(nameof(ProgressText))); }
+            set { progressText = value; PropertyChanged(this, new PropertyChangedEventArgs(nameof(ProgressText))); }
         }
 
         public string ResultText
@@ -80,6 +79,7 @@ namespace DigitRecognition.UI
         private void btn1_Click(object sender, RoutedEventArgs e)
         {
             RasterizeToBitmap(this);
+
             paintSurface.Children.Clear();
             guessBtn.IsEnabled = true;
         }
@@ -105,9 +105,9 @@ namespace DigitRecognition.UI
 
                 var bmp = new Bitmap(ms);
 
-                // 10 pixels padding
-                var startX = (int)((CanvasBorder.Margin.Left + 10) * SCALE);
-                var startY = (int)((CanvasBorder.Margin.Top + 10) * SCALE);
+                // 10 pixels padding - because the image contains the element borders
+                var startX = (int)((CanvasBorder.Margin.Left + 5) * SCALE);
+                var startY = (int)((CanvasBorder.Margin.Top + 5) * SCALE);
 
                 var width = (int)((CanvasBorder.ActualWidth - 10) * SCALE);
                 var height = (int)((CanvasBorder.ActualHeight - 10) * SCALE);
@@ -117,9 +117,11 @@ namespace DigitRecognition.UI
                 var finalImage = bmp.CropImage(rect);
                 var imgName = Guid.NewGuid().ToString() + ".png";
 
-                pixels = finalImage.GetPixels().ToArray();
-                finalImage.Save(imgName);
-
+                pixels = finalImage.GetPixels();
+                var checkImage = ImageHelpers.CreateBitMap(pixels);
+                checkImage.Save(imgName);
+                    
+                //finalImage.Save(imgName);
                 bitmapImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine(Directory.GetCurrentDirectory(), imgName)));
 
                 bmp.Dispose();

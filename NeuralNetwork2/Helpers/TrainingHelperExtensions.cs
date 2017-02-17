@@ -62,7 +62,7 @@ namespace NeuralNetwork
 
 
 
-        const double LearnRate = 1;
+        const double LearnRate = 0.5;
         const double Momentum = 0.1;
 
         /// <summary> Back propagation for 3 layer network</summary>
@@ -139,6 +139,5 @@ namespace NeuralNetwork
                 }
             }
         }
-
     }
 }
