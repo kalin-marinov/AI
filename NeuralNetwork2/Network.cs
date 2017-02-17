@@ -95,7 +95,9 @@ namespace NeuralNetwork
 
             for (int i = 0; i < weightMatrix.GetLength(0); i++)
             {
-                var items = lines[i].Split(',').Select(double.Parse).ToArray();
+                var items = lines[i].Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(double.Parse).ToArray();
+
                 for (int j = 0; j < weightMatrix.GetLength(1); j++)
                 {
                     weightMatrix[i, j] = items[j];
