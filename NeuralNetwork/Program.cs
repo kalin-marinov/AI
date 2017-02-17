@@ -41,8 +41,8 @@ namespace NeuralNetwork
                     var result = net.GetOutputs();
 
                     TrainingHelper.BackPropagate(net, output);
-                    var result2 = net.GetOutputs();
                     net.Reset();
+                    var result2 = net.GetOutputs();
 
 
                     Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} After backrpop: {ArrayToDigit(result2)}  Actual: {trainItems[i].Item2}");

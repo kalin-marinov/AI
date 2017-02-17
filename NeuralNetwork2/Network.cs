@@ -170,9 +170,9 @@ namespace NeuralNetwork
             var inputHiddenWeights = Weights.First(); // weights between input and hidden layer
             var prevInputGradients = gradientHistory.First();
 
-            for (int h = 0; h < hiddenValues.Length; ++h)
+            for (int h = 0; h < hiddenValues.Length; h++)
             {
-                for (int i = 0; i < input.Length; ++i)
+                for (int i = 0; i < input.Length; i++)
                 {
                     var gradient = hiddenNeuronSignals[h] * input[i];
                     var delta = gradient * LearnRate;
@@ -185,9 +185,9 @@ namespace NeuralNetwork
 
             // Update hidden - output weights
             var prevOutputGradients = gradientHistory.Last();
-            for (int j = 0; j < hiddenValues.Length; ++j)
+            for (int j = 0; j < hiddenValues.Length; j++)
             {
-                for (int k = 0; k < output.Length; ++k)
+                for (int k = 0; k < output.Length; k++)
                 {
                     var gradient = outputSignals[k] * hiddenValues[j];
                     var delta = gradient * LearnRate; 

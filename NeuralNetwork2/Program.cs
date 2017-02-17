@@ -129,7 +129,7 @@ namespace NeuralNetwork
 
         /// <summary> Maps a number from 0 to 255 to a decimal between 0 and 1 </summary>
         static double MapInput(byte b)
-            => (double)b / 2550;
+            => (double)b / 255;
 
     }
 }
