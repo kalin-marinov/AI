@@ -10,8 +10,8 @@ namespace NeuralNetwork
 
         public bool IsInput { get; set; } = false;
 
-        private double? netValue;
-        private double? actualValue;
+        private double? cachedNetValue;
+        private double? cachedActual;
 
 
         public IList<Synapse> InputNodes { get; set; } = new List<Synapse>();
@@ -20,12 +20,12 @@ namespace NeuralNetwork
 
         /// <summary> Useful for the input Neurons - whose values are not calculated, but set directly </summary>
         public void SetValue(double value)
-            => this.netValue = value;
+            => this.cachedNetValue = value;
 
 
         /// <summary> The neuron value - equals to the activation function applied to the sum of all synapse values and the bias </summary>
         public double GetValue()
-           =>  IsInput ? netValue.Value : Activate(GetValueWithoutActivation());
+           =>  IsInput ? cachedNetValue.Value : Activate(GetValueWithoutActivation());
         
 
         /// <summary> Returns the net value (without applying activation function - (b1 + w1*v1 + w2*v2 ...))
@@ -33,31 +33,30 @@ namespace NeuralNetwork
         /// </summary>
         public double GetValueWithoutActivation()
         {
-            if (!netValue.HasValue)
+            if (!cachedNetValue.HasValue)
             {
                 var synapseValues = InputNodes.Select(s => s.Value);
                 var sum = Bias + synapseValues.Sum();
-                netValue = sum;
+                cachedNetValue = sum;
             }
 
-            return netValue.Value;
+            return cachedNetValue.Value;
         }
 
 
-        /// <summary> Hyperbolical tangent - a sigmoid function </summary>
         private double Activate(double value)
         {
-            if (!actualValue.HasValue)
-                actualValue = MathHelper.Sigmoid(value);
+            if (!cachedActual.HasValue)
+                cachedActual = MathHelper.Sigmoid(value);
 
-            return actualValue.Value;
+            return cachedActual.Value;
         }
 
 
         public void Reset()
         {
-            actualValue = null;
-            netValue = null;
+            cachedActual = null;
+            cachedNetValue = null;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace NeuralNetwork
     {
         public static void Main()
         {
-            //SimpleTest();
+            SimpleTest();
 
             var trainImages = ImageDataReader.ReadImageFile(@"Data\train-images.idx3-ubyte").Take(200).ToList();
             var trainLabels = ImageDataReader.ReadLabels(@"Data\train-labels.idx1-ubyte").Take(200).ToList();
@@ -35,24 +35,22 @@ namespace NeuralNetwork
                     var input = image.Select(MapInput).ToArray();
                     var output = DigitToArray(trainItems[i].Item2);
 
-                    net.SetInput(input);
 
                     // Back propagate
-                    var result = net.GetOutputs();
+                    var result = net.Calculate(input);
 
                     TrainingHelper.BackPropagate(net, output);
-                    net.Reset();
-                    var result2 = net.GetOutputs();
+                    var result2 = net.Calculate(input);
 
-
-                    Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} After backrpop: {ArrayToDigit(result2)}  Actual: {trainItems[i].Item2}");
+                    if (epoch > 100)
+                        Console.WriteLine($"Trained for image {i} Guess: {ArrayToDigit(result)} After backrpop: {ArrayToDigit(result2)}  Actual: {trainItems[i].Item2}");
                 }
 
                 trainItems = trainItems.Shuffle();
                 Console.WriteLine("Epoch: " + epoch);
             }
 
-       
+
 
             // Test:
             for (int i = 0; i < testImages.Count; i++)
@@ -61,8 +59,7 @@ namespace NeuralNetwork
                 var input = image.Select(b => (double)b).ToArray();
                 var output = testLabels[i];
 
-                net.SetInput(input);
-                var result = net.GetOutputs();
+                var result = net.Calculate(input);
                 Console.WriteLine($"Processing image {i} Guess: {ArrayToDigit(result)} Actual: {output}");
             }
 
@@ -72,19 +69,18 @@ namespace NeuralNetwork
         static void SimpleTest()
         {
             var net = new Network(6, 10, 5);
-            var weights = net.GetWeights(0);
+            var rng = new Random();
 
-            net.SetInput(new[] { 0.8, 0.5, 0.1, 0.3, 0.6, 0.821 });
-            var expected = new[] { 0.01, 0.01, 0.7, 0.25, 0.01 };
-            var result = net.GetOutputs();
+            var input = Enumerable.Range(0, 6).Select(_ => rng.NextDouble()).ToArray();
+            var expected = Enumerable.Range(0, 5).Select(_ => rng.NextDouble()).ToArray();
+          
+            var result = net.Calculate(input);
 
-            while (result.CalculateError(expected) > 0.000001)
+            while (result.CalculateError(expected) > 0.0001)
             {
                 Console.WriteLine($"Result: [{string.Join(",", result)}]");
                 TrainingHelper.BackPropagate(net, expected);
-
-                result = net.GetOutputs();
-                net.Reset();
+                result = net.Calculate(input);
             }
         }
 

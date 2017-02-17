@@ -8,63 +8,30 @@ using System.Threading.Tasks;
 
 namespace NeuralNetwork
 {
-    class Program
+    public class Program
     {
         public static void Main()
         {
-            //SimpleTest();
-
-            var trainImages = ImageDataReader.ReadImageFile(@"Data\train-images.idx3-ubyte").Take(200).ToList();
-            var trainLabels = ImageDataReader.ReadLabels(@"Data\train-labels.idx1-ubyte").Take(200).ToList();
-
-            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(50).ToList();
-            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(50).ToList();
-
-            var trainItems = trainImages.Zip(trainLabels, (img, lbl) => Tuple.Create(img, lbl)).ToList();
-
-            TestNet2(trainItems, testImages, testLabels);
+            TestNet2();
         }
 
-        private static void TestNet2(List<Tuple<byte[], byte>> trainItems, List<byte[]> testImages, List<byte> testLabels)
+        private static void TestNet2()
         {
-            var net = new Network(784, 100, 10);
-
-            int epoch = 0;
-            while (epoch < 200)
-            {
-                for (int i = 0; i < trainItems.Count; i++)
-                {
-                    var image = trainItems[i].Item1;
-                    var input = image.Select(MapInput).ToArray();
-                    var expected = DigitToArray(trainItems[i].Item2);
-
-                    net.Calculate(input);
-
-                    // Back propagate
-                   // var result = net.LayerValues.Last();
-
-                    net.BackPropagate(expected);
-                    //net.Calculate(input);
-                    //var result2 = net.LayerValues.Last();
-
-                    //if (epoch > 200)
-                    //    Console.WriteLine($"Trained for image {i} Initial:{ArrayToDigit(result)} After backprop: {ArrayToDigit(result)} Actual: {trainItems[i].Item2}  | Epoch {epoch}");
-
-                }
-
-                Console.WriteLine("Epoch: " + epoch);
-                Console.CursorTop--;
-
-                trainItems = trainItems.Shuffle();   // This network cannot learn on shuffled input yet
-                epoch++;
-            }
+            Network net = TrainNetwork();
 
             File.WriteAllText("weights1.txt", net.Weights[0].GetMatrixString());
             File.WriteAllText("weights2.txt", net.Weights[0].GetMatrixString());
 
-            // Test:
-            int succeed = 0;
+            TestNetwork(net);
+        }
 
+        private static void TestNetwork(Network net)
+        {
+            // Test:
+            var testImages = ImageDataReader.ReadImageFile(@"Data\t10k-images.idx3-ubyte").Take(50).ToList();
+            var testLabels = ImageDataReader.ReadLabels(@"Data\t10k-labels.idx1-ubyte").Take(50).ToList();
+
+            int succeed = 0;
             for (int i = 0; i < testImages.Count; i++)
             {
                 var image = testImages[i];
@@ -84,31 +51,51 @@ namespace NeuralNetwork
             Console.ReadLine();
         }
 
-        static void SimpleTest()
+        public static Network TrainNetwork()
         {
-            var net = new Network(6, 10, 5);
-            var rng = new Random();
+            var trainImages = ImageDataReader.ReadImageFile(@"Data\train-images.idx3-ubyte").Take(200);
+            var trainLabels = ImageDataReader.ReadLabels(@"Data\train-labels.idx1-ubyte").Take(200);
+            var trainItems = trainImages.Zip(trainLabels, (img, lbl) => Tuple.Create(img, lbl)).ToList();
 
-            var input = Enumerable.Range(0, 6).Select(_ => rng.NextDouble()).ToArray();
-            var expected = Enumerable.Range(0, 5).Select(_ => rng.NextDouble()).ToArray();
+            var net = new Network(784, 100, 10);
 
-            net.Calculate(input);
-            var result = net.LayerValues.Last();
-
-            while (result.CalculateError(expected) > 0.0001)
+            int epoch = 0;
+            while (epoch < 200)
             {
-                Console.WriteLine($"Result: [{string.Join(",", result)}]");
-                net.BackPropagate(expected);
-                net.Calculate(input);
-                result = net.LayerValues.Last();
+                for (int i = 0; i < trainItems.Count; i++)
+                {
+                    var image = trainItems[i].Item1;
+                    var input = image.Select(MapInput).ToArray();
+                    var expected = DigitToArray(trainItems[i].Item2);
+
+                    net.Calculate(input);
+
+                    // Back propagate
+                    // var result = net.LayerValues.Last();
+
+                    net.BackPropagate(expected);
+                    //net.Calculate(input);
+                    //var result2 = net.LayerValues.Last();
+
+                    //if (epoch > 200)
+                    //    Console.WriteLine($"Trained for image {i} Initial:{ArrayToDigit(result)} After backprop: {ArrayToDigit(result)} Actual: {trainItems[i].Item2}  | Epoch {epoch}");
+
+                }
+
+                Console.WriteLine("Epoch: " + epoch);
+                //Console.CursorTop--;
+
+                trainItems = trainItems.Shuffle(); 
+                epoch++;
             }
+
+            return net;
         }
 
-        static byte ArrayToDigit(IList<double> data)
+        public static byte ArrayToDigit(IList<double> data)
           => (byte)data.IndexOf(data.Max());
 
-
-        static double[] DigitToArray(byte label)
+        public static double[] DigitToArray(byte label)
         {
             switch (label)
             {
@@ -128,7 +115,7 @@ namespace NeuralNetwork
         }
 
         /// <summary> Maps a number from 0 to 255 to a decimal between 0 and 1 </summary>
-        static double MapInput(byte b)
+        public static double MapInput(byte b)
             => (double)b / 255;
 
     }

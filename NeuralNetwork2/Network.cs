@@ -76,13 +76,15 @@ namespace NeuralNetwork
             : this(inputCount, new[] { hiddenUnits }, outputCount) { }
 
 
-        public void Calculate(double[] input)
+        public double[] Calculate(double[] input)
         {
             LayerNetValues[0] = input;
             LayerValues[0] = input;
 
             for (int i = 0; i < Weights.Count; i++)
                 CalculateLayerValues(i + 1);
+
+            return LayerValues.Last();
         }
 
         public void SetRandomWeights()
@@ -107,7 +109,7 @@ namespace NeuralNetwork
 
             for (int curr = 0; curr < layer.Length; ++curr)
             {
-                layer[curr] = 0; // Biases[index-1][curr]; // reset value
+                layer[curr] =  Biases[index-1][curr]; // reset value
 
                 for (int prev = 0; prev < inputs.Length; ++prev)
                     layer[curr] += inputs[prev] * inputWeights[prev, curr]; // weight * input
@@ -138,9 +140,9 @@ namespace NeuralNetwork
                 outputSignals[i] = error * derivative;              // Product: dErr / dOut *  dOut / dNet -  a.k.a delta
 
                 // Update Bias:
-                //var delta = outputSignals[i] * LearnRate;
-                //outputBias[i] += delta + prevOutputBias[i] * Momentum;
-                //prevOutputBias[i] = delta;
+                var delta = outputSignals[i] * LearnRate;
+                outputBias[i] += delta + prevOutputBias[i] * Momentum;
+                prevOutputBias[i] = delta;
             }
 
             var hiddenValues = LayerValues[1];
@@ -160,9 +162,9 @@ namespace NeuralNetwork
                 hiddenNeuronSignals[h] = derivative * sum;
 
                 // Update bias:
-                //var delta = hiddenNeuronSignals[h] * LearnRate;
-                //hiddenBiases[h] += delta + prevHiddenBias[h] * Momentum;
-                //prevHiddenBias[h] = delta;
+                var delta = hiddenNeuronSignals[h] * LearnRate;
+                hiddenBiases[h] += delta + prevHiddenBias[h] * Momentum;
+                prevHiddenBias[h] = delta;
             }
 
             // Update input - hidden weights using the signals calculated

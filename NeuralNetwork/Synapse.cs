@@ -4,12 +4,11 @@ namespace NeuralNetwork
 {
     public class Synapse
     {
-        private double weight;
         private double? cachedValue;
 
 
         public Neuron SourceNeuron { get; set; }
-        
+
         public Neuron TargetNeuron { get; set; }
 
         public double Value
@@ -23,20 +22,19 @@ namespace NeuralNetwork
             }
         }
 
-        public double Weight
-        {
-            get { return weight; }
-            set { weight = value; cachedValue = null; }
-        }
+        public double Weight { get; set; }
 
-        public double PreviousWeightGradient { get; set; } = 0;
+        public double PreviousWeightGradient { get; set; }
 
 
         static Random rng = new Random();
 
         /// <summary> Creates a synapse connecting the source and destination, with a random weight between 0 and 1</summary>
         public static Synapse Randomized(Neuron source, Neuron destination)
-            => new Synapse { SourceNeuron = source,  TargetNeuron = destination, Weight = rng.NextDouble() * 0.001 };
+            => new Synapse { SourceNeuron = source, TargetNeuron = destination, Weight = rng.NextDouble() * 0.001 };
+
+        public void Reset()
+          => cachedValue = null;
 
     }
 }

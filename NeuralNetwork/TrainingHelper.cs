@@ -6,6 +6,8 @@ namespace NeuralNetwork
 {
     public static class TrainingHelper
     {
+        private const double LearnRate = 0.5;
+        private const double Momentum = 0.1;
 
         public static double[] CalculateDifference(this IList<double> actual, IList<double> expected)
            => Enumerable.Range(0, expected.Count).Select(i => expected[i] - actual[i]).ToArray();
@@ -52,15 +54,14 @@ namespace NeuralNetwork
                 // calculate sum of errorDelta (error signal) of each connected (affected) output node
                 var sum = 0.0;
                 foreach (var synapse in neuron.OutputNodes)
-                {
                     sum += synapse.Weight * errors[synapse.TargetNeuron];
-                }
+                
 
                 // Proceed to modifying the weights of the input nodes
                 foreach (var synapse in neuron.InputNodes)
                 {
-                    var gradient = synapse.SourceNeuron.GetValue() * sum * derivative * 0.5;
-                    synapse.Weight += gradient + synapse.PreviousWeightGradient * 0.1;
+                    var gradient = synapse.SourceNeuron.GetValue() * sum * derivative * LearnRate;
+                    synapse.Weight += gradient + synapse.PreviousWeightGradient * Momentum;
                     synapse.PreviousWeightGradient = gradient;
                 }
             }
@@ -72,8 +73,8 @@ namespace NeuralNetwork
                 foreach (var synapse in neuron.InputNodes)
                 {
                     // dErr/dWeight = dErr/dOut * dOut/dNet * dNet/dWeight
-                    var gradient = errorDelta * synapse.SourceNeuron.GetValue() * 0.5;
-                    synapse.Weight += gradient + synapse.PreviousWeightGradient * 0.1;
+                    var gradient = errorDelta * synapse.SourceNeuron.GetValue() * LearnRate;
+                    synapse.Weight += gradient + synapse.PreviousWeightGradient * Momentum;
                     synapse.PreviousWeightGradient = gradient;
                 }
             }

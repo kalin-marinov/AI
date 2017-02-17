@@ -78,9 +78,12 @@ namespace NeuralNetwork
             return result;
         }
 
-        public IList<double> GetOutputs()
-            => OutputLayer.Select(n => n.GetValue()).ToArray();
-
+        public IList<double> Calculate(double[] input)
+        {
+            this.Reset();
+            this.SetInput(input);
+            return OutputLayer.Select(n => n.GetValue()).ToArray();
+        }
 
         /// <summary> Creates a layer of Neuron, that are connected to each item of the previous layer with random weights </summary>
         private static IList<Neuron> CreateLayer(int unitCount, ICollection<Neuron> previousLayer)
@@ -103,11 +106,16 @@ namespace NeuralNetwork
             return layerNodes;
         }
 
+        /// <summary> Clears cached values </summary>
         public void Reset()
         {
             foreach (var layer in Layers.Skip(1))
                 foreach (var neuron in layer)
+                {
                     neuron.Reset();
+                    foreach (var synapse in neuron.InputNodes)
+                        synapse.Reset();
+                }
         }
 
     }
